@@ -3,6 +3,7 @@ import axios from "axios";
 import { v4 as uuid } from "uuid";
 import { NFTCollectionContext } from "@/contexts/NFTCollectionContext";
 import { CircularProgress } from "@mui/material";
+import { SIGNATURE_MESSAGE } from "@/constants";
 
 const MintNft = () => {
   const nftCollectionContext = useContext(NFTCollectionContext);
@@ -23,10 +24,21 @@ const MintNft = () => {
     setIsGenerating(true);
     const uniqueId = uuid();
     try {
-      const res = await axios.post("/api/generate-image", { keyword, uuid: uniqueId }, { responseType: "arraybuffer" });
-      // const base64 = `data:image/png;base64,${btoa(
-      //   new Uint8Array(res.data).reduce((data, byte) => data + String.fromCharCode(byte), "")
-      // )}`;
+      const wallet = nftCollectionContext?.getSigner();
+      if (!wallet) return null;
+      const signature = await wallet.signMessage(SIGNATURE_MESSAGE);
+      const res = await axios.post(
+        "/api/generate-image",
+        {
+          keyword,
+          uuid: uniqueId,
+          msgSender: nftCollectionContext?.metamaskAccount,
+          signature,
+        },
+        {
+          responseType: "arraybuffer",
+        }
+      );
       const blob = new Blob([res.data], { type: "image/png" });
       setImage(URL.createObjectURL(blob));
       setCurrentImageMetadata({
@@ -47,7 +59,15 @@ const MintNft = () => {
 
   const handleMint = async () => {
     if (currentImageMetadata) {
-      const { data } = await axios.post("/api/ipfs-upload", { uuid: currentImageMetadata?.uuid, name, description });
+      const wallet = nftCollectionContext?.getSigner();
+      if (!wallet) return null;
+      const signature = await wallet.signMessage(SIGNATURE_MESSAGE);
+      const { data } = await axios.post("/api/ipfs-upload", {
+        uuid: currentImageMetadata?.uuid,
+        name,
+        description,
+        signature,
+      });
       nftCollectionContext?.mint(data.path);
     }
   };

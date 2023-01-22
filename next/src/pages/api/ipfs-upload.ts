@@ -2,6 +2,8 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import fs from "fs";
 import path from "path";
 import { create } from "ipfs-http-client";
+import { ethers } from "ethers";
+import { SIGNATURE_MESSAGE } from "@/constants";
 
 const tempImagePath = path.join(__dirname);
 
@@ -16,7 +18,8 @@ const ipfs = create({
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === "POST") {
-    const { uuid, name, description } = req.body;
+    const { uuid, name, description, signature } = req.body;
+    ethers.utils.verifyMessage(SIGNATURE_MESSAGE, signature);
     const files = fs.readdirSync(`${tempImagePath}/${uuid}`);
     const file = fs.readFileSync(`${tempImagePath}/${uuid}/${files[0]}`);
     const ipfsImageResponse = await ipfs.add(file);

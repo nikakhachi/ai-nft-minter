@@ -2,13 +2,16 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { generateAsync } from "stability-client";
 import fs from "fs";
 import path from "path";
+import { ethers } from "ethers";
+import { SIGNATURE_MESSAGE } from "@/constants";
 
 const tempImagePath = path.join(__dirname);
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === "POST") {
-    const { keyword, uuid } = req.body;
+    const { keyword, uuid, signature } = req.body;
     if (!keyword) return res.status(400).json({ error: "Keyword is Missing" });
+    ethers.utils.verifyMessage(SIGNATURE_MESSAGE, signature);
     const imagePath = `${tempImagePath}/${uuid}`;
     fs.mkdirSync(imagePath);
     const aiResponse = (await generateAsync({
