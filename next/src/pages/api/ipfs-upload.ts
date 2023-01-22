@@ -16,7 +16,7 @@ const ipfs = create({
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === "POST") {
-    const { uuid } = req.body;
+    const { uuid, name, description } = req.body;
     const files = fs.readdirSync(`${tempImagePath}/${uuid}`);
     const file = fs.readFileSync(`${tempImagePath}/${uuid}/${files[0]}`);
     console.log("upload image to ipfs");
@@ -24,22 +24,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const metadata = {
       path: "/",
       content: JSON.stringify({
-        attributes: [
-          {
-            trait_type: "Peace",
-            value: "10",
-          },
-          {
-            trait_type: "Love",
-            value: "100",
-          },
-          {
-            trait_type: "Web3",
-            value: "1000",
-          },
-        ],
+        name,
+        attributes: [],
         image: `https://ipfs.io/ipfs/${ipfsImageResponse.cid}`,
-        description: "So much PLW3!",
+        description,
       }),
     };
     console.log("uploading metadata");

@@ -1,58 +1,12 @@
 import Head from "next/head";
 import styles from "@/styles/Home.module.css";
-import { useContext, useState } from "react";
-import axios from "axios";
-import { v4 as uuid } from "uuid";
+import { useContext } from "react";
 import { NFTCollectionContext } from "@/contexts/NFTCollectionContext";
+import NavBar from "@/components/NavBar";
+import MintNft from "@/components/MintNft";
 
 export default function Home() {
   const nftCollectionContext = useContext(NFTCollectionContext);
-
-  const [keyword, setKeyword] = useState("");
-  const [image, setImage] = useState("");
-  const [currentImageMetadata, setCurrentImageMetadata] = useState<{
-    blob: Blob;
-    uuid: String;
-  }>();
-
-  const handleGenerateImage = async () => {
-    const uniqueId = uuid();
-    try {
-      axios
-        .post(
-          "/api/generate-image",
-          { keyword, uuid: uniqueId },
-          {
-            responseType: "arraybuffer",
-          }
-        )
-        .then((res) => {
-          // const base64 = `data:image/png;base64,${btoa(
-          //   new Uint8Array(res.data).reduce((data, byte) => data + String.fromCharCode(byte), "")
-          // )}`;
-          const blob = new Blob([res.data], { type: "image/png" });
-          setImage(URL.createObjectURL(blob));
-          setCurrentImageMetadata({
-            blob,
-            uuid: uniqueId,
-          });
-        });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handleResetImage = () => {
-    setImage("");
-    setCurrentImageMetadata(undefined);
-  };
-
-  const handleMint = async () => {
-    if (currentImageMetadata) {
-      const { data } = await axios.post("/api/ipfs-upload", { uuid: currentImageMetadata?.uuid });
-      nftCollectionContext?.mint(data.path);
-    }
-  };
 
   return (
     <>
@@ -69,18 +23,8 @@ export default function Home() {
           <button onClick={nftCollectionContext?.connectToWallet}>CONNECT TO WALLET</button>
         ) : (
           <>
-            <h1>Generate and Own NFT!</h1>
-            <input value={keyword} onChange={(e) => setKeyword(e.target.value)} placeholder="keyword" />
-            <button className="text-xl font-bold text-blue-600/100" onClick={handleGenerateImage}>
-              GENERATE IMAGE
-            </button>
-            <img src={image} />
-            {image && (
-              <>
-                <button onClick={handleResetImage}>RESET IMAGE</button>
-                <button onClick={handleMint}>MINT</button>
-              </>
-            )}
+            <NavBar />
+            <MintNft />
           </>
         )}
       </main>
