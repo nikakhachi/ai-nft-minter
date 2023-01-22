@@ -19,8 +19,6 @@ export default function Home() {
       <main className={styles.main}>
         {nftCollectionContext?.isLoading ? (
           <h1>Loading</h1>
-        ) : !nftCollectionContext?.metamaskAccount ? (
-          <button onClick={nftCollectionContext?.connectToWallet}>CONNECT TO WALLET</button>
         ) : (
           <>
             <NavBar />

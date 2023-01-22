@@ -1,10 +1,18 @@
-const items = [
-  { text: "Home", href: "#", aClassName: "text-xl hover:text-[#fe5cb8] duration-500", liClassName: "mx-4 my-6 md:my-0" },
-  { text: "Service", href: "#", aClassName: "text-xl hover:text-[#fe5cb8] duration-500", liClassName: "mx-4 my-6 md:my-0" },
-  { text: "About", href: "#", aClassName: "text-xl hover:text-[#fe5cb8] duration-500", liClassName: "mx-4 my-6 md:my-0" },
-];
+import { NFTCollectionContext } from "@/contexts/NFTCollectionContext";
+import { shortenAddress } from "@/utils";
+import { useContext } from "react";
+
+const items: any[] = [];
 
 const NavBar = () => {
+  const nftCollectionContext = useContext(NFTCollectionContext);
+
+  const handleButtonClick = () => {
+    if (!nftCollectionContext?.metamaskAccount) {
+      nftCollectionContext?.connectToWallet();
+    }
+  };
+
   return (
     <>
       <nav className="py-5 px-10 text-white md:flex md:items-center md:justify-between">
@@ -24,7 +32,9 @@ const NavBar = () => {
               </a>
             </li>
           ))}
-          <button className="bg-[#fe5cb8] text-white font-[Courier] duration-500 px-6 py-2 mx-4  rounded ">Get started</button>
+          <button onClick={handleButtonClick} className="bg-[#fe5cb8] text-white font-[Courier] duration-500 px-6 py-2 mx-4  rounded ">
+            {!nftCollectionContext?.metamaskAccount ? "Connect Wallet" : shortenAddress(nftCollectionContext.metamaskAccount)}
+          </button>
           <h2 className=""></h2>
         </ul>
       </nav>

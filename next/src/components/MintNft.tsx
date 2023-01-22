@@ -56,62 +56,75 @@ const MintNft = () => {
       <div className="w-full  rounded-lg mt-10">
         <div>
           <div className="grid gap-y-3">
-            <input
-              disabled={image !== null || isGenerating}
-              value={keyword}
-              onChange={(e) => setKeyword(e.target.value)}
-              className="m-auto w-96 h-10 focus:border-[#fe5cb8] rounded-md text-black py-3 px-4 outline-none transition"
-            />
-            {image ? (
-              <>
-                <div className="m-auto w-9/12 flex mb-12 mt-5 gap-5 flex-col sm:flex-row">
-                  <div className="w-full sm:w-1/2 mb-10 sm:mb-0">
-                    <img className="my-10 object-cover h-full" src={image} />
-                  </div>
-                  <div className="w-full sm:w-1/2 flex flex-col justify-center gap-5">
-                    <div className="flex flex-col items-center">
-                      <p className="text-white text-3xl font-bold">Like NFT ?</p>
-                      <p className="text-white text-md">Give it a name and a descriptino and MINT it to own !</p>
-                    </div>
-                    <input
-                      placeholder="NFT Name"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      className="h-10 focus:border-[#fe5cb8] rounded-md text-black py-3 px-4 outline-none transition"
-                    />
-                    <input
-                      placeholder="NFT Description"
-                      value={description}
-                      onChange={(e) => setDescription(e.target.value)}
-                      className="h-10 focus:border-[#fe5cb8] rounded-md text-black py-3 px-4 outline-none transition"
-                    />
-                    <button
-                      className="border-2 border-[#fe5cb8] text-white font-[Courier] duration-500 px-6 py-2 rounded"
-                      onClick={handleMint}
-                    >
-                      Mint
-                    </button>
-                  </div>
-                </div>
-                <div className="flex flex-col items-center">
-                  <p className="text-white text-md mt-9">Or reset and generate new one</p>
-                </div>
-                <button
-                  className="m-auto w-96 bg-red-800  text-white font-[Courier] duration-500 px-6 py-2 rounded"
-                  onClick={handleResetImage}
-                >
-                  Reset
-                </button>
-              </>
-            ) : (
+            {!nftCollectionContext?.metamaskAccount ? (
               <button
-                onClick={handleGenerateImage}
+                onClick={nftCollectionContext?.connectToWallet}
                 disabled={image !== null || isGenerating}
                 type="submit"
-                className="m-auto w-96 border-2 border-[#fe5cb8] text-white font-[Courier] duration-500 px-6 py-2 rounded flex justify-center items-center h-10"
+                className="m-auto mt-10 w-96 border-2 border-[#fe5cb8] text-white font-[Courier] duration-500 px-6 py-2 rounded flex justify-center items-center h-10"
               >
-                {!isGenerating ? "Generate AI Image" : <CircularProgress color="inherit" size="1rem" />}
+                Connect the Wallet
               </button>
+            ) : (
+              <>
+                <input
+                  disabled={image !== null || isGenerating}
+                  value={keyword}
+                  onChange={(e) => setKeyword(e.target.value)}
+                  className="m-auto w-96 h-10 focus:border-[#fe5cb8] rounded-md text-black py-3 px-4 outline-none transition"
+                />
+                {image ? (
+                  <>
+                    <div className="m-auto w-9/12 flex mb-12 mt-5 gap-5 flex-col sm:flex-row">
+                      <div className="w-full sm:w-1/2 mb-10 sm:mb-0">
+                        <img className="my-10 object-cover h-full" src={image} />
+                      </div>
+                      <div className="w-full sm:w-1/2 flex flex-col justify-center gap-5">
+                        <div className="flex flex-col items-center">
+                          <p className="text-white text-3xl font-bold">Like NFT ?</p>
+                          <p className="text-white text-md">Give it a name and a descriptino and MINT it to own !</p>
+                        </div>
+                        <input
+                          placeholder="NFT Name"
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
+                          className="h-10 focus:border-[#fe5cb8] rounded-md text-black py-3 px-4 outline-none transition"
+                        />
+                        <input
+                          placeholder="NFT Description"
+                          value={description}
+                          onChange={(e) => setDescription(e.target.value)}
+                          className="h-10 focus:border-[#fe5cb8] rounded-md text-black py-3 px-4 outline-none transition"
+                        />
+                        <button
+                          className="border-2 border-[#fe5cb8] text-white font-[Courier] duration-500 px-6 py-2 rounded"
+                          onClick={handleMint}
+                        >
+                          Mint
+                        </button>
+                      </div>
+                    </div>
+                    <div className="flex flex-col items-center">
+                      <p className="text-white text-md mt-9">Or reset and generate new one</p>
+                    </div>
+                    <button
+                      className="m-auto w-96 bg-red-800  text-white font-[Courier] duration-500 px-6 py-2 rounded"
+                      onClick={handleResetImage}
+                    >
+                      Reset
+                    </button>
+                  </>
+                ) : (
+                  <button
+                    onClick={handleGenerateImage}
+                    disabled={image !== null || isGenerating}
+                    type="submit"
+                    className="m-auto w-96 border-2 border-[#fe5cb8] text-white font-[Courier] duration-500 px-6 py-2 rounded flex justify-center items-center h-10"
+                  >
+                    {!isGenerating ? "Generate AI Image" : <CircularProgress color="inherit" size="1rem" />}
+                  </button>
+                )}
+              </>
             )}
           </div>
         </div>
