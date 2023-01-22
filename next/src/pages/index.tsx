@@ -1,11 +1,13 @@
 import Head from "next/head";
 import styles from "@/styles/Home.module.css";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import axios from "axios";
-import { create } from "ipfs-http-client";
 import { v4 as uuid } from "uuid";
+import { NFTCollectionContext } from "@/contexts/NFTCollectionContext";
 
 export default function Home() {
+  const nftCollectionContext = useContext(NFTCollectionContext);
+
   const [keyword, setKeyword] = useState("");
   const [image, setImage] = useState("");
   const [currentImageMetadata, setCurrentImageMetadata] = useState<{
@@ -47,7 +49,8 @@ export default function Home() {
 
   const handleMint = async () => {
     if (currentImageMetadata) {
-      await axios.post("/api/ipfs-upload", { uuid: currentImageMetadata?.uuid });
+      const { data } = await axios.post("/api/ipfs-upload", { uuid: currentImageMetadata?.uuid });
+      nftCollectionContext?.mint(data.path);
     }
   };
 
@@ -60,13 +63,21 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        <input value={keyword} onChange={(e) => setKeyword(e.target.value)} placeholder="keyword" />
-        <button onClick={handleGenerateImage}>GENERATE IMAGE</button>
-        <img src={image} />
-        {image && (
+        {nftCollectionContext?.isLoading ? (
+          <h1>Loading</h1>
+        ) : !nftCollectionContext?.metamaskAccount ? (
+          <button onClick={nftCollectionContext?.connectToWallet}>CONNECT TO WALLET</button>
+        ) : (
           <>
-            <button onClick={handleResetImage}>RESET IMAGE</button>
-            <button onClick={handleMint}>MINT</button>
+            <input value={keyword} onChange={(e) => setKeyword(e.target.value)} placeholder="keyword" />
+            <button onClick={handleGenerateImage}>GENERATE IMAGE</button>
+            <img src={image} />
+            {image && (
+              <>
+                <button onClick={handleResetImage}>RESET IMAGE</button>
+                <button onClick={handleMint}>MINT</button>
+              </>
+            )}
           </>
         )}
       </main>
