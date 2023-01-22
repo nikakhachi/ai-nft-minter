@@ -19,7 +19,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const { uuid, name, description } = req.body;
     const files = fs.readdirSync(`${tempImagePath}/${uuid}`);
     const file = fs.readFileSync(`${tempImagePath}/${uuid}/${files[0]}`);
-    console.log("upload image to ipfs");
     const ipfsImageResponse = await ipfs.add(file);
     const metadata = {
       path: "/",
@@ -30,7 +29,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         description,
       }),
     };
-    console.log("uploading metadata");
     const result = await ipfs.add(metadata);
     res.status(200).json(result);
     fs.rmSync(`${tempImagePath}/${uuid}`, { recursive: true, force: true });

@@ -97,7 +97,6 @@ export const NFTCollectionProvider: React.FC<PropsWithChildren> = ({ children })
     const contract = getContract(getSigner());
     const txn = await contract.safeMint(metamaskAccount, `ipfs://${ipfsId}`);
     await txn.wait();
-    console.log("MINTED !");
   };
 
   const value = {

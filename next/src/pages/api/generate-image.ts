@@ -10,9 +10,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const { keyword, uuid } = req.body;
     if (!keyword) return res.status(400).json({ error: "Keyword is Missing" });
     const imagePath = `${tempImagePath}/${uuid}`;
-    console.log("IMAGE PATH: ===>  ", imagePath);
     fs.mkdirSync(imagePath);
-    console.log("dir created");
     const aiResponse = (await generateAsync({
       prompt: keyword,
       apiKey: process.env.STABILITY_API_KEY || "",
@@ -23,7 +21,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       samples: 1,
       outDir: imagePath,
     })) as any;
-    console.log(aiResponse.images[0]);
     fs.readFile(aiResponse.images[0].filePath, function (err, data) {
       if (err) throw err;
       res.send(data);
