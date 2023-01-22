@@ -69,8 +69,11 @@ export default function Home() {
           <button onClick={nftCollectionContext?.connectToWallet}>CONNECT TO WALLET</button>
         ) : (
           <>
+            <h1>Generate and Own NFT!</h1>
             <input value={keyword} onChange={(e) => setKeyword(e.target.value)} placeholder="keyword" />
-            <button onClick={handleGenerateImage}>GENERATE IMAGE</button>
+            <button className="text-xl font-bold text-blue-600/100" onClick={handleGenerateImage}>
+              GENERATE IMAGE
+            </button>
             <img src={image} />
             {image && (
               <>
