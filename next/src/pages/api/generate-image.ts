@@ -19,8 +19,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       apiKey: process.env.STABILITY_API_KEY || "",
       width: 512,
       height: 512,
-      cfgScale: 10,
-      steps: 10,
+      cfgScale: 20,
+      steps: 15,
       samples: 1,
       outDir: imagePath,
     })) as any;
