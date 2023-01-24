@@ -124,7 +124,6 @@ export const NFTCollectionProvider: React.FC<PropsWithChildren> = ({ children })
       const contract = getContract(getSigner());
       const txn = await contract.safeMint(metamaskAccount, `ipfs://${ipfsId}`);
       await txn.wait();
-      snackbarContext?.open("Your NFT has been minted successfully! Please wait before it appears in your wallet", "info");
       setIsMinted(true);
     } catch (error) {
       snackbarContext?.open("Something went wrong", "error");
