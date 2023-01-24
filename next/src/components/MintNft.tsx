@@ -108,6 +108,7 @@ const MintNft = () => {
                           disabled={nftCollectionContext?.isMinting}
                           placeholder="NFT Description"
                           value={description}
+                          maxLength={100}
                           onChange={(e) => setDescription(e.target.value)}
                           className="h-10 focus:border-[#fe5cb8] rounded-md text-black py-3 px-4 outline-none transition"
                         />
@@ -116,7 +117,13 @@ const MintNft = () => {
                           className="h-13 border-2 border-[#fe5cb8] text-white font-[Courier] duration-500 px-6 py-2 rounded flex justify-center items-center"
                           onClick={handleMint}
                         >
-                          {!nftCollectionContext?.isMinting ? "Mint" : <CircularProgress color="inherit" size="1rem" />}
+                          {!nftCollectionContext?.isMinting ? (
+                            "Mint"
+                          ) : (
+                            <>
+                              Minting your NFT <CircularProgress sx={{ marginLeft: "10px" }} color="inherit" size="1rem" />
+                            </>
+                          )}
                         </button>
                         {!nftCollectionContext?.isMinting && (
                           <>
@@ -166,7 +173,13 @@ const MintNft = () => {
                 type="submit"
                 className="m-auto w-96 border-2 border-[#fe5cb8] text-white font-[Courier] duration-500 px-6 py-2 rounded flex justify-center items-center h-10"
               >
-                {!isGenerating ? "Generate AI Image" : <CircularProgress color="inherit" size="1rem" />}
+                {!isGenerating ? (
+                  "Generate AI Image"
+                ) : (
+                  <>
+                    AI is generating you image <CircularProgress sx={{ marginLeft: "10px" }} color="inherit" size="1rem" />
+                  </>
+                )}
               </button>
             )}
           </div>
