@@ -3,6 +3,16 @@ import { ethers } from "ethers";
 import { SnackbarContext } from "./SnackbarContext";
 import { CONTRACT_ADDRESS } from "@/constants";
 import CONTRACT_JSON from "@/constants/contract.json";
+import axios from "axios";
+import { bigNumberToInt } from "@/utils";
+
+type NftType = {
+  imageUrl: string;
+  id: number;
+  owner: string;
+  name: string;
+  description: string;
+};
 
 type NFTCollectionContextType = {
   metamaskWallet: any;
@@ -11,6 +21,14 @@ type NFTCollectionContextType = {
   isLoading: boolean;
   getSigner: () => ethers.providers.JsonRpcSigner;
   mint: (ipfsId: string) => void;
+  fetchAllNfts: () => void;
+  allNfts: NftType[];
+  userNfts: NftType[];
+  areNftsLoading: boolean;
+  isMinting: boolean;
+  nftOwners: string[];
+  setIsMinting: (b: boolean) => void;
+  isMinted: boolean;
 };
 
 let metamaskWallet: ethers.providers.ExternalProvider | undefined;
@@ -26,6 +44,13 @@ export const NFTCollectionProvider: React.FC<PropsWithChildren> = ({ children })
   const [metamaskAccount, setMetamaskAccount] = useState<string>();
   const [isLoading, setIsLoading] = useState(true);
   const [contract, setContract] = useState<ethers.Contract>();
+
+  const [areNftsLoading, setAreNftsLoading] = useState(true);
+  const [allNfts, setAllNfts] = useState<NftType[]>([]);
+  const [userNfts, setUserNfts] = useState<NftType[]>([]);
+  const [isMinting, setIsMinting] = useState(false);
+  const [nftOwners, setNftOwners] = useState<string[]>([]);
+  const [isMinted, setIsMinted] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -94,9 +119,56 @@ export const NFTCollectionProvider: React.FC<PropsWithChildren> = ({ children })
   };
 
   const mint = async (ipfsId: string) => {
-    const contract = getContract(getSigner());
-    const txn = await contract.safeMint(metamaskAccount, `ipfs://${ipfsId}`);
-    await txn.wait();
+    try {
+      setIsMinting(true);
+      const contract = getContract(getSigner());
+      const txn = await contract.safeMint(metamaskAccount, `ipfs://${ipfsId}`);
+      await txn.wait();
+      snackbarContext?.open("Your NFT has been minted successfully! Please wait before it appears in your wallet", "info");
+      setIsMinted(true);
+    } catch (error) {
+      snackbarContext?.open("Something went wrong", "error");
+    } finally {
+      setIsMinting(false);
+    }
+  };
+
+  const fetchAllNfts = async () => {
+    setAreNftsLoading(true);
+
+    try {
+      const contract = getContract(getSigner());
+      const allNftsRes = await contract.getAllTokenUrls();
+
+      const userTokenCount = bigNumberToInt(await contract.balanceOf(metamaskAccount));
+
+      const tokenIdsOwnedByUser: number[] = [];
+      for (let i = 0; i < userTokenCount; i++) {
+        tokenIdsOwnedByUser.push(bigNumberToInt(await contract.tokenOfOwnerByIndex(metamaskAccount, i)));
+      }
+
+      const allNftsFinal: NftType[] = await Promise.all(
+        allNftsRes.map((item: string, index: number) =>
+          axios.get(`https://ipfs.io/ipfs/${item.split("//")[1]}`).then(({ data: metadata }) =>
+            contract.ownerOf(index).then((owner: string) => ({
+              name: metadata.name,
+              description: metadata.description,
+              owner: owner,
+              id: index,
+              imageUrl: metadata.image,
+            }))
+          )
+        )
+      );
+
+      setAllNfts(allNftsFinal);
+      setUserNfts(allNftsFinal.filter((item) => item.owner.toUpperCase() === metamaskAccount?.toUpperCase()));
+      setNftOwners([...new Set(allNftsFinal.map((item) => item.owner))]);
+    } catch (error) {
+      snackbarContext?.open("Something went wrong", "error");
+    } finally {
+      setAreNftsLoading(false);
+    }
   };
 
   const value = {
@@ -106,6 +178,14 @@ export const NFTCollectionProvider: React.FC<PropsWithChildren> = ({ children })
     isLoading,
     getSigner,
     mint,
+    fetchAllNfts,
+    allNfts,
+    userNfts,
+    areNftsLoading,
+    isMinting,
+    nftOwners,
+    setIsMinting,
+    isMinted,
   };
 
   return <NFTCollectionContext.Provider value={value}>{children}</NFTCollectionContext.Provider>;

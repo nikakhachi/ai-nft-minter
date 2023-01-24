@@ -24,6 +24,24 @@ contract NFTCollection is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
         _setTokenURI(tokenId, uri);
     }
 
+    function getAllTokenUrls() external view returns (string[] memory) {
+        uint totalSupplyOfTokens = totalSupply();
+        string[] memory tokenUrls = new string[](totalSupplyOfTokens);
+        for(uint i = 0; i < totalSupplyOfTokens; i++){
+            tokenUrls[i] = tokenURI(i);
+        }
+        return tokenUrls;
+    }
+
+    function getAllTokenUrlsByOwner(address _owner) external view returns (string[] memory) {
+        uint tokensOwnedByAddress = balanceOf(_owner);
+        string[] memory tokenUrls = new string[](tokensOwnedByAddress);
+        for(uint i = 0; i < tokensOwnedByAddress; i++){
+            tokenUrls[i] = tokenURI(tokenOfOwnerByIndex(_owner, i));
+        }
+        return tokenUrls;
+    }
+
     // The following functions are overrides required by Solidity.
 
     function _beforeTokenTransfer(address from, address to, uint256 tokenId, uint256 batchSize)
