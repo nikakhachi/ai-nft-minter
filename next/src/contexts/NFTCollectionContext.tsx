@@ -32,6 +32,7 @@ type NFTCollectionContextType = {
   fetchDataFromContract: () => void;
   maxSupply?: number;
   totalSupply?: number;
+  tip: (ethAmount: number) => Promise<void>;
 };
 
 let metamaskWallet: ethers.providers.ExternalProvider | undefined;
@@ -190,6 +191,15 @@ export const NFTCollectionProvider: React.FC<PropsWithChildren> = ({ children })
     fetchSupplies();
   };
 
+  const tip = async (ethAmount: number) => {
+    const txn = await getSigner().sendTransaction({
+      from: metamaskAccount,
+      to: CONTRACT_ADDRESS,
+      value: ethers.utils.parseEther(String(ethAmount)),
+    });
+    txn.wait();
+  };
+
   const value = {
     metamaskWallet,
     metamaskAccount,
@@ -208,6 +218,7 @@ export const NFTCollectionProvider: React.FC<PropsWithChildren> = ({ children })
     fetchDataFromContract,
     totalSupply,
     maxSupply,
+    tip,
   };
 
   return <NFTCollectionContext.Provider value={value}>{children}</NFTCollectionContext.Provider>;
