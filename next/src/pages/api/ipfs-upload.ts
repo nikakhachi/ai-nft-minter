@@ -4,6 +4,7 @@ import path from "path";
 import { create } from "ipfs-http-client";
 import { ethers } from "ethers";
 import { SIGNATURE_MESSAGE } from "@/constants";
+import { jsonRpsServices } from "@/services/jsonRpc.service";
 
 const tempImagePath = path.join(__dirname);
 
@@ -20,6 +21,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === "POST") {
     const { uuid, name, description, signature } = req.body;
     ethers.utils.verifyMessage(SIGNATURE_MESSAGE, signature);
+    const isTotalSupplyLessThanMaxSupply = await jsonRpsServices.isTotalSupplyLessThanMaxSupply();
+    if (!isTotalSupplyLessThanMaxSupply) return res.status(400).json({ error: "NFT max supply is reached" });
     const files = fs.readdirSync(`${tempImagePath}/${uuid}`);
     const file = fs.readFileSync(`${tempImagePath}/${uuid}/${files[0]}`);
     const ipfsImageResponse = await ipfs.add(file);
