@@ -4,9 +4,11 @@ import { v4 as uuid } from "uuid";
 import { NFTCollectionContext } from "@/contexts/NFTCollectionContext";
 import { CircularProgress } from "@mui/material";
 import { SIGNATURE_MESSAGE } from "@/constants";
+import { SnackbarContext } from "@/contexts/SnackbarContext";
 
 const MintNft = () => {
   const nftCollectionContext = useContext(NFTCollectionContext);
+  const snackbarContext = useContext(SnackbarContext);
 
   const [keyword, setKeyword] = useState("");
   const [image, setImage] = useState<string | null>(null);
@@ -21,6 +23,7 @@ const MintNft = () => {
   const [description, setDescription] = useState("");
 
   const handleGenerateImage = async () => {
+    if (!keyword) return snackbarContext?.open("Keyword is empty", "error");
     setIsGenerating(true);
     const uniqueId = uuid();
     try {
@@ -45,8 +48,8 @@ const MintNft = () => {
         blob,
         uuid: uniqueId,
       });
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      snackbarContext?.open("Something went wrong", "error");
     } finally {
       setIsGenerating(false);
     }
