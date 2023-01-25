@@ -30,6 +30,8 @@ type NFTCollectionContextType = {
   setIsMinting: (b: boolean) => void;
   isMinted: boolean;
   fetchDataFromContract: () => void;
+  maxSupply?: number;
+  totalSupply?: number;
 };
 
 let metamaskWallet: ethers.providers.ExternalProvider | undefined;
@@ -52,6 +54,8 @@ export const NFTCollectionProvider: React.FC<PropsWithChildren> = ({ children })
   const [isMinting, setIsMinting] = useState(false);
   const [nftOwners, setNftOwners] = useState<string[]>([]);
   const [isMinted, setIsMinted] = useState(false);
+  const [maxSupply, setMaxSupply] = useState<number>();
+  const [totalSupply, setTotalSupply] = useState<number>();
 
   useEffect(() => {
     (async () => {
@@ -171,8 +175,19 @@ export const NFTCollectionProvider: React.FC<PropsWithChildren> = ({ children })
     }
   };
 
+  const fetchSupplies = async () => {
+    const contract = getContract(getSigner());
+
+    const totalSupplyRes = bigNumberToInt(await contract.totalSupply());
+    const maxSupplyRes = bigNumberToInt(await contract.MAX_SUPPLY());
+
+    setTotalSupply(totalSupplyRes);
+    setMaxSupply(maxSupplyRes);
+  };
+
   const fetchDataFromContract = () => {
     fetchAllNfts();
+    fetchSupplies();
   };
 
   const value = {
@@ -191,6 +206,8 @@ export const NFTCollectionProvider: React.FC<PropsWithChildren> = ({ children })
     setIsMinting,
     isMinted,
     fetchDataFromContract,
+    totalSupply,
+    maxSupply,
   };
 
   return <NFTCollectionContext.Provider value={value}>{children}</NFTCollectionContext.Provider>;

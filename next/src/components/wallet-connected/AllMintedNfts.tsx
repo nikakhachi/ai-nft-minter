@@ -12,7 +12,10 @@ const AllMintedNfts = () => {
   return (
     <>
       <div className="text-center mt-10 mb-1">
-        <p className="text-white text-3xl ">NFTs Minted</p>
+        <p className="text-white text-3xl ">NFT Collection</p>
+        <p className="text-xl text-gray-400">
+          {nftCollectionContext?.totalSupply} minted out of {nftCollectionContext?.maxSupply}
+        </p>
         <div className="container flex flex-wrap justify-end mx-auto">
           <Switch color="error" onChange={(e) => setToggleUserNfts(e.target.checked)} checked={toggleUserNfts} />
           <p className="text-white text-lg mr-2">Only My NFTs</p>
