@@ -2,16 +2,12 @@ import { CONTRACT_ADDRESS } from "@/constants";
 import { NFTCollectionContext } from "@/contexts/NFTCollectionContext";
 import { shortenAddress } from "@/utils";
 import { CircularProgress, Switch, Tooltip } from "@mui/material";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 
 const AllMintedNfts = () => {
   const nftCollectionContext = useContext(NFTCollectionContext);
 
   const [toggleUserNfts, setToggleUserNfts] = useState(false);
-
-  useEffect(() => {
-    nftCollectionContext?.fetchAllNfts();
-  }, []);
 
   return (
     <>

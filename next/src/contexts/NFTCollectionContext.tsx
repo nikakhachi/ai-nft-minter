@@ -29,6 +29,7 @@ type NFTCollectionContextType = {
   nftOwners: string[];
   setIsMinting: (b: boolean) => void;
   isMinted: boolean;
+  fetchDataFromContract: () => void;
 };
 
 let metamaskWallet: ethers.providers.ExternalProvider | undefined;
@@ -170,6 +171,10 @@ export const NFTCollectionProvider: React.FC<PropsWithChildren> = ({ children })
     }
   };
 
+  const fetchDataFromContract = () => {
+    fetchAllNfts();
+  };
+
   const value = {
     metamaskWallet,
     metamaskAccount,
@@ -185,6 +190,7 @@ export const NFTCollectionProvider: React.FC<PropsWithChildren> = ({ children })
     nftOwners,
     setIsMinting,
     isMinted,
+    fetchDataFromContract,
   };
 
   return <NFTCollectionContext.Provider value={value}>{children}</NFTCollectionContext.Provider>;
