@@ -3,8 +3,8 @@ import styles from "@/styles/Home.module.css";
 import { useContext } from "react";
 import { NFTCollectionContext } from "@/contexts/NFTCollectionContext";
 import NavBar from "@/components/NavBar";
-import MintNft from "@/components/MintNft";
-import AllMintedNfts from "@/components/AllMintedNfts";
+import WalletNotConnected from "@/components/wallet-not-connected";
+import WalletConnected from "@/components/wallet-connected";
 
 export default function Home() {
   const nftCollectionContext = useContext(NFTCollectionContext);
@@ -23,20 +23,7 @@ export default function Home() {
         ) : (
           <>
             <NavBar />
-            {nftCollectionContext?.metamaskAccount ? (
-              <>
-                <MintNft />
-                <AllMintedNfts />
-              </>
-            ) : (
-              <button
-                onClick={nftCollectionContext?.connectToWallet}
-                type="submit"
-                className="m-auto mt-10 w-96 border-2 border-[#fe5cb8] text-white font-[Courier] duration-500 px-6 py-2 rounded flex justify-center items-center h-10"
-              >
-                Connect the Wallet
-              </button>
-            )}
+            {nftCollectionContext?.metamaskAccount ? <WalletConnected /> : <WalletNotConnected />}
           </>
         )}
       </main>
