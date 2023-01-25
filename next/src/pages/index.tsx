@@ -5,6 +5,8 @@ import { NFTCollectionContext } from "@/contexts/NFTCollectionContext";
 import NavBar from "@/components/NavBar";
 import WalletNotConnected from "@/components/wallet-not-connected";
 import WalletConnected from "@/components/wallet-connected";
+import Loading from "@/components/Loading";
+import IncorrectNetwork from "@/components/IncorrectNetwork";
 
 export default function Home() {
   const nftCollectionContext = useContext(NFTCollectionContext);
@@ -19,11 +21,19 @@ export default function Home() {
       </Head>
       <main className={styles.main}>
         {nftCollectionContext?.isLoading ? (
-          <h1>Loading</h1>
+          <Loading />
         ) : (
           <>
             <NavBar />
-            {nftCollectionContext?.metamaskAccount ? <WalletConnected /> : <WalletNotConnected />}
+            {!nftCollectionContext?.metamaskAccount ? (
+              <WalletNotConnected />
+            ) : nftCollectionContext.isNetworkGoerli === undefined ? (
+              <Loading />
+            ) : nftCollectionContext.isNetworkGoerli === false ? (
+              <IncorrectNetwork />
+            ) : (
+              <WalletConnected />
+            )}
           </>
         )}
       </main>

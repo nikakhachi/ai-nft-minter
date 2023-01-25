@@ -33,6 +33,8 @@ type NFTCollectionContextType = {
   maxSupply?: number;
   totalSupply?: number;
   tip: (ethAmount: number) => Promise<void>;
+  checkIfNetworkIsGoerli: () => Promise<boolean>;
+  isNetworkGoerli: boolean | undefined;
 };
 
 let metamaskWallet: ethers.providers.ExternalProvider | undefined;
@@ -57,11 +59,13 @@ export const NFTCollectionProvider: React.FC<PropsWithChildren> = ({ children })
   const [isMinted, setIsMinted] = useState(false);
   const [maxSupply, setMaxSupply] = useState<number>();
   const [totalSupply, setTotalSupply] = useState<number>();
+  const [isNetworkGoerli, setIsNetworkGoerli] = useState<boolean>();
 
   useEffect(() => {
     (async () => {
       const account = await findMetaMaskAccount();
       if (account !== null) {
+        checkIfNetworkIsGoerli();
         setMetamaskAccount(account);
         setIsLoading(false);
       }
@@ -98,6 +102,7 @@ export const NFTCollectionProvider: React.FC<PropsWithChildren> = ({ children })
     });
 
     setMetamaskAccount(accounts[0]);
+    checkIfNetworkIsGoerli();
     return accounts[0];
   };
 
@@ -108,6 +113,19 @@ export const NFTCollectionProvider: React.FC<PropsWithChildren> = ({ children })
       return signer;
     } else {
       throw alert("Connect to Wallet");
+    }
+  };
+
+  const checkIfNetworkIsGoerli = async () => {
+    if (metamaskWallet) {
+      const provider = new ethers.providers.Web3Provider(metamaskWallet);
+      const network = await provider.getNetwork();
+      if (network.name === "goerli") {
+        setIsNetworkGoerli(true);
+      } else {
+        setIsNetworkGoerli(false);
+      }
+      return network.name === "goerli";
     }
   };
 
@@ -219,6 +237,8 @@ export const NFTCollectionProvider: React.FC<PropsWithChildren> = ({ children })
     totalSupply,
     maxSupply,
     tip,
+    isNetworkGoerli,
+    checkIfNetworkIsGoerli,
   };
 
   return <NFTCollectionContext.Provider value={value}>{children}</NFTCollectionContext.Provider>;
