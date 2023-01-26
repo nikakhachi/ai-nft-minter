@@ -26,14 +26,13 @@ type NFTCollectionContextType = {
   userNfts: NftType[];
   areNftsLoading: boolean;
   isMinting: boolean;
-  nftOwners: string[];
+  nftOwners: Record<string, number>;
   setIsMinting: (b: boolean) => void;
   isMinted: boolean;
   fetchDataFromContract: () => void;
   maxSupply?: number;
   totalSupply?: number;
   tip: (ethAmount: number) => Promise<void>;
-  checkIfNetworkIsGoerli: () => Promise<boolean>;
   isNetworkGoerli: boolean | undefined;
 };
 
@@ -55,7 +54,7 @@ export const NFTCollectionProvider: React.FC<PropsWithChildren> = ({ children })
   const [allNfts, setAllNfts] = useState<NftType[]>([]);
   const [userNfts, setUserNfts] = useState<NftType[]>([]);
   const [isMinting, setIsMinting] = useState(false);
-  const [nftOwners, setNftOwners] = useState<string[]>([]);
+  const [nftOwners, setNftOwners] = useState<Record<string, number>>({});
   const [isMinted, setIsMinted] = useState(false);
   const [maxSupply, setMaxSupply] = useState<number>();
   const [totalSupply, setTotalSupply] = useState<number>();
@@ -184,23 +183,32 @@ export const NFTCollectionProvider: React.FC<PropsWithChildren> = ({ children })
         tokenIdsOwnedByUser.push(bigNumberToInt(await contract.tokenOfOwnerByIndex(metamaskAccount, i)));
       }
 
+      const owners: Record<string, number> = {};
+
       const allNftsFinal: NftType[] = await Promise.all(
         allNftsRes.map((item: string, index: number) =>
           axios.get(`https://ipfs.io/ipfs/${item.split("//")[1]}`).then(({ data: metadata }) =>
-            contract.ownerOf(index).then((owner: string) => ({
-              name: metadata.name,
-              description: metadata.description,
-              owner: owner,
-              id: index,
-              imageUrl: metadata.image,
-            }))
+            contract.ownerOf(index).then((owner: string) => {
+              if (owners[owner]) {
+                owners[owner]++;
+              } else {
+                owners[owner] = 1;
+              }
+              return {
+                name: metadata.name,
+                description: metadata.description,
+                owner: owner,
+                id: index,
+                imageUrl: metadata.image,
+              };
+            })
           )
         )
       );
 
       setAllNfts(allNftsFinal);
       setUserNfts(allNftsFinal.filter((item) => item.owner.toUpperCase() === metamaskAccount?.toUpperCase()));
-      setNftOwners([...new Set(allNftsFinal.map((item) => item.owner))]);
+      setNftOwners(owners);
     } catch (error) {
       snackbarContext?.open("Something went wrong", "error");
     } finally {
@@ -252,7 +260,6 @@ export const NFTCollectionProvider: React.FC<PropsWithChildren> = ({ children })
     maxSupply,
     tip,
     isNetworkGoerli,
-    checkIfNetworkIsGoerli,
   };
 
   return <NFTCollectionContext.Provider value={value}>{children}</NFTCollectionContext.Provider>;
