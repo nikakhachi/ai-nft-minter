@@ -10,11 +10,19 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 contract NFTCollection is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
     using Counters for Counters.Counter;
 
+    event Minted(TokenItem tokenData);
+
     Counters.Counter private _tokenIdCounter;
 
     uint8 constant public MAX_SUPPLY = 100;
 
     constructor(string memory _name, string memory _symbol) ERC721(_name, _symbol) {}
+
+    struct TokenItem {
+        uint id;
+        address owner;
+        string uri;
+    }
 
     function safeMint(address to, string memory uri) public onlyOwner {
         require(totalSupply() < MAX_SUPPLY, "Maximum Supply Limit Reached");
@@ -22,25 +30,23 @@ contract NFTCollection is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
         _tokenIdCounter.increment();
         _safeMint(to, tokenId);
         _setTokenURI(tokenId, uri);
+        emit Minted(TokenItem(tokenId, msg.sender, uri));
     }
 
-    function getAllTokenUrls() external view returns (string[] memory) {
+    function getAllTokenData() public view returns (TokenItem[] memory) {
         uint totalSupplyOfTokens = totalSupply();
-        string[] memory tokenUrls = new string[](totalSupplyOfTokens);
+        TokenItem[] memory tokenUrls = new TokenItem[](totalSupplyOfTokens);
         for(uint i = 0; i < totalSupplyOfTokens; i++){
-            tokenUrls[i] = tokenURI(i);
+            tokenUrls[i] = TokenItem(i, ownerOf(i), tokenURI(i));
         }
         return tokenUrls;
     }
 
-    function getAllTokenUrlsByOwner(address _owner) external view returns (string[] memory) {
-        uint tokensOwnedByAddress = balanceOf(_owner);
-        string[] memory tokenUrls = new string[](tokensOwnedByAddress);
-        for(uint i = 0; i < tokensOwnedByAddress; i++){
-            tokenUrls[i] = tokenURI(tokenOfOwnerByIndex(_owner, i));
-        }
-        return tokenUrls;
+    function withdraw() external onlyOwner {
+        payable(owner()).transfer(address(this).balance);
     }
+
+    receive() external payable {} 
 
     // The following functions are overrides required by Solidity.
 
