@@ -27,6 +27,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       samples: 1,
       outDir: imagePath,
     })) as any;
+    setTimeout(() => {
+      try {
+        fs.rmSync(imagePath, { recursive: true, force: true });
+      } catch (error) {}
+    }, 1000 * 60 * 10); // Deletes the created image and its folder in 10 minutes
     fs.readFile(aiResponse.images[0].filePath, function (err, data) {
       if (err) throw err;
       res.send(data);
