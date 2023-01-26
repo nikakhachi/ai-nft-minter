@@ -69,7 +69,14 @@ export const NFTCollectionProvider: React.FC<PropsWithChildren> = ({ children })
         setMetamaskAccount(account);
         setIsLoading(false);
       }
-      (metamaskWallet as any).on("accountsChanged", (accounts: any[]) => setMetamaskAccount(accounts[0]));
+      (metamaskWallet as any).on("accountsChanged", (accounts: any[]) => {
+        if (!accounts.length) {
+          setMetamaskAccount(undefined);
+          setIsNetworkGoerli(undefined);
+        } else {
+          setMetamaskAccount(accounts[0]);
+        }
+      });
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
