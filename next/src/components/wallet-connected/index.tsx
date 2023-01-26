@@ -9,6 +9,7 @@ const WalletConnected = () => {
 
   useEffect(() => {
     nftCollectionContext?.fetchDataFromContract();
+    nftCollectionContext?.setEventHandlers();
   }, []);
 
   return (
