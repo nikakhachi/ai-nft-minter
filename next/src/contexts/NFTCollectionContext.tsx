@@ -81,6 +81,13 @@ export const NFTCollectionProvider: React.FC<PropsWithChildren> = ({ children })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    if (metamaskAccount) {
+      const newUserNfts = allNfts.filter((item) => item.owner.toUpperCase() === metamaskAccount?.toUpperCase());
+      setUserNfts(newUserNfts);
+    }
+  }, [metamaskAccount]);
+
   const findMetaMaskAccount = async () => {
     try {
       if (!metamaskWallet || !metamaskWallet.request) return null;
