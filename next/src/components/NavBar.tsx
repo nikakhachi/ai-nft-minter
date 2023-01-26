@@ -62,7 +62,7 @@ const NavBar = () => {
           AI NFT Minter
         </a>
 
-        <ul className="font-[Proxima Nova] md:flex md:items-center z-[-1] md:z-auto md:static absolute w-full left-0 md:w-auto md:py-0 py-4 md:pl-0 pl-7 md:opacity-100 opacity-0 top-[-400px] transition-all ease-in duration-500">
+        <ul className="font-[Proxima Nova] flex">
           {items.map((item) => (
             <li key={item.text} className={item.liClassName}>
               <a href={item.href} className={item.aClassName}>
@@ -72,7 +72,7 @@ const NavBar = () => {
           ))}
           <button
             onClick={handleDialog}
-            className="border-2 border-[#fe5cb8] text-white font-[Courier] duration-500 px-6 py-1 mx-4  rounded flex align-center"
+            className="border-2 border-[#fe5cb8] text-white font-[Courier] duration-500 px-6 py-1 rounded flex items-center"
           >
             TIP
           </button>
