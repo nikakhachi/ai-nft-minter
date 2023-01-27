@@ -4,7 +4,7 @@ import { SnackbarContext } from "./SnackbarContext";
 import { CONTRACT_ADDRESS } from "@/constants";
 import CONTRACT_JSON from "@/constants/contract.json";
 import axios from "axios";
-import { bigNumberToInt } from "@/utils";
+import { bigNumberToInt, ipfsUriToUrl } from "@/utils";
 
 type NFTResType = {
   id: number;
@@ -162,11 +162,11 @@ export const NFTCollectionProvider: React.FC<PropsWithChildren> = ({ children })
     return fetchedContract;
   };
 
-  const mint = async (ipfsId: string) => {
+  const mint = async (ipfsUri: string) => {
     try {
       setIsMinting(true);
       const contract = getContract(getSigner());
-      const txn = await contract.safeMint(metamaskAccount, `ipfs://${ipfsId}`);
+      const txn = await contract.safeMint(metamaskAccount, ipfsUri);
       await txn.wait();
       setIsMinted(true);
     } catch (error) {
@@ -190,9 +190,11 @@ export const NFTCollectionProvider: React.FC<PropsWithChildren> = ({ children })
 
       const owners: Record<string, number> = {};
 
+      console.log(allNftsRes);
+
       const allNftsFinal: NftType[] = await Promise.all(
-        allNftsRes.map((item, index) =>
-          axios.get(`https://ipfs.io/ipfs/${item.uri.split("//")[1]}`).then(({ data: metadata }) => {
+        allNftsRes.slice(-2).map((item, index) =>
+          axios.get(ipfsUriToUrl(item.uri)).then(({ data: metadata }) => {
             if (owners[item.owner]) {
               owners[item.owner]++;
             } else {
@@ -203,7 +205,7 @@ export const NFTCollectionProvider: React.FC<PropsWithChildren> = ({ children })
               description: metadata.description,
               owner: item.owner,
               id: item.id,
-              imageUrl: metadata.image,
+              imageUrl: ipfsUriToUrl(metadata.image),
             };
           })
         )
@@ -253,13 +255,13 @@ export const NFTCollectionProvider: React.FC<PropsWithChildren> = ({ children })
           owner: newNft.owner,
           uri: newNft.uri,
         };
-        const { data: metadata } = await axios.get(`https://ipfs.io/ipfs/${newNFTRes.uri.split("//")[1]}`);
+        const { data: metadata } = await axios.get(ipfsUriToUrl(newNFTRes.uri));
         const newNFTFinal: NftType = {
           name: metadata.name,
           description: metadata.description,
           owner: newNFTRes.owner,
           id: newNFTRes.id,
-          imageUrl: metadata.image,
+          imageUrl: ipfsUriToUrl(metadata.image),
         };
         setAllNfts((a) => [...a, newNFTFinal]);
         setNftOwners((obj) => {

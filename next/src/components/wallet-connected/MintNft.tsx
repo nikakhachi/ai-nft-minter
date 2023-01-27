@@ -73,7 +73,7 @@ const MintNft = () => {
         description,
         signature,
       });
-      nftCollectionContext?.mint(data.path);
+      nftCollectionContext?.mint(data.ipfsUri);
     }
   };
   return (
