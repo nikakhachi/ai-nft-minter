@@ -89,7 +89,7 @@ const MintNft = () => {
               className="m-auto w-96 h-10 focus:border-[#fe5cb8] rounded-md text-black py-3 px-4 outline-none transition"
             />
             <p className="mx-auto -mt-2 text-xs w-96 focus:border-[#fe5cb8] rounded-md text-white outline-none transition">
-              e.g. A dream of a distant galaxy, concept art, matte painting, HQ, 4k
+              Try: `A dream of a distant galaxy, concept art, matte painting, HQ, 4k`
             </p>
             {image ? (
               <>
