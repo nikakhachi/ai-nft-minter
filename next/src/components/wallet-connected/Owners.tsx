@@ -21,7 +21,7 @@ const Owners = () => {
         <div className="text-white w-full text-center px-2">
           {nftCollectionContext &&
             Object.keys(nftCollectionContext?.nftOwners).map((item) => (
-              <p className="my-1">
+              <p className="my-1" key={item}>
                 <span className="font-semibold text-white dark:text-white text-md mdtext-xl">{item}</span> minted{" "}
                 <span className="font-semibold text-white dark:text-white text-md mdtext-xl">{nftCollectionContext.nftOwners[item]}</span>{" "}
                 NFTs
