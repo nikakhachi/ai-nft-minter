@@ -82,11 +82,15 @@ const MintNft = () => {
         <div>
           <div className="grid gap-y-3">
             <input
+              placeholder="Text-to-Image Prompt"
               disabled={image !== null || isGenerating}
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
               className="m-auto w-96 h-10 focus:border-[#fe5cb8] rounded-md text-black py-3 px-4 outline-none transition"
             />
+            <p className="mx-auto -mt-2 text-xs w-96 focus:border-[#fe5cb8] rounded-md text-white outline-none transition">
+              e.g. A dream of a distant galaxy, concept art, matte painting, HQ, 4k
+            </p>
             {image ? (
               <>
                 <div className="m-auto w-9/12 flex mb-12 mt-5 gap-5 flex-col sm:flex-row">
