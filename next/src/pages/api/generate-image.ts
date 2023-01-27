@@ -6,8 +6,6 @@ import { ethers } from "ethers";
 import { SIGNATURE_MESSAGE } from "@/constants";
 import { jsonRpsServices } from "@/services/jsonRpc.service";
 
-const tempImagePath = path.join(__dirname);
-
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === "POST") {
     const { keyword, uuid, signature } = req.body;
@@ -15,7 +13,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     ethers.utils.verifyMessage(SIGNATURE_MESSAGE, signature);
     const isTotalSupplyLessThanMaxSupply = await jsonRpsServices.isTotalSupplyLessThanMaxSupply();
     if (!isTotalSupplyLessThanMaxSupply) return res.status(400).json({ error: "NFT max supply is reached" });
-    const imagePath = `${tempImagePath}/${uuid}`;
+    const imagePath = `/tmp/${uuid}`;
     fs.mkdirSync(imagePath);
     const aiResponse = (await generateAsync({
       prompt: keyword,
