@@ -262,6 +262,19 @@ export const NFTCollectionProvider: React.FC<PropsWithChildren> = ({ children })
           imageUrl: metadata.image,
         };
         setAllNfts((a) => [...a, newNFTFinal]);
+        setNftOwners((obj) => {
+          const newObj = { ...obj };
+          if (newObj[newNFTRes.owner]) {
+            newObj[newNFTRes.owner]++;
+          } else {
+            newObj[newNFTRes.owner] = 1;
+          }
+          return newObj;
+        });
+        setTotalSupply((n) => {
+          if (n) return n + 1;
+          return 0;
+        });
       });
     });
   };
