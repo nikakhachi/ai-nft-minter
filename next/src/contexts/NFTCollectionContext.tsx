@@ -190,8 +190,6 @@ export const NFTCollectionProvider: React.FC<PropsWithChildren> = ({ children })
 
       const owners: Record<string, number> = {};
 
-      console.log(allNftsRes);
-
       const allNftsFinal: NftType[] = await Promise.all(
         allNftsRes.slice(-2).map((item, index) =>
           axios.get(ipfsUriToUrl(item.uri)).then(({ data: metadata }) => {
