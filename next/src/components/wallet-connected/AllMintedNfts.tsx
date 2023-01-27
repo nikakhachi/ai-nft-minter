@@ -29,9 +29,9 @@ const AllMintedNfts = () => {
         ) : (
           (!toggleUserNfts ? nftCollectionContext?.allNfts || [] : nftCollectionContext?.userNfts || [])
             .sort((a, b) => b.id - a.id)
-            .map((item, index) => (
+            .map((item) => (
               <div key={item.id} className="w-1/2 p-2 rounded lg:w-1/4 md:w-1/3">
-                <a href={`https://testnets.opensea.io/assets/goerli/${CONTRACT_ADDRESS}/${index}`} target="_blank" rel="noreferrer">
+                <a href={`https://testnets.opensea.io/assets/goerli/${CONTRACT_ADDRESS}/${item.id}`} target="_blank" rel="noreferrer">
                   <img src={item.imageUrl} alt="image" />
                 </a>
                 <p className="text-white mt-2">
