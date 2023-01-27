@@ -45,6 +45,7 @@ type NFTCollectionContextType = {
 
 let metamaskWallet: ethers.providers.ExternalProvider | undefined;
 if (typeof window !== "undefined") {
+  // @ts-ignore
   metamaskWallet = window.ethereum;
 }
 
