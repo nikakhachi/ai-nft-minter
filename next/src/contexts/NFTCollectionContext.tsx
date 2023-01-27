@@ -41,6 +41,7 @@ type NFTCollectionContextType = {
   tip: (ethAmount: number) => Promise<void>;
   isNetworkGoerli: boolean | undefined;
   setEventHandlers: () => void;
+  setIsMinted: (isMinted: boolean) => void;
 };
 
 let metamaskWallet: ethers.providers.ExternalProvider | undefined;
@@ -263,6 +264,7 @@ export const NFTCollectionProvider: React.FC<PropsWithChildren> = ({ children })
           imageUrl: ipfsUriToUrl(metadata.image),
         };
         setAllNfts((a) => [...a, newNFTFinal]);
+        if (newNFTRes.owner.toUpperCase() === metamaskAccount?.toUpperCase()) setUserNfts((a) => [...a, newNFTFinal]);
         setNftOwners((obj) => {
           const newObj = { ...obj };
           if (newObj[newNFTRes.owner]) {
@@ -295,6 +297,7 @@ export const NFTCollectionProvider: React.FC<PropsWithChildren> = ({ children })
     nftOwners,
     setIsMinting,
     isMinted,
+    setIsMinted,
     fetchDataFromContract,
     totalSupply,
     maxSupply,
