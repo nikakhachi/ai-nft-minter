@@ -27,27 +27,29 @@ const AllMintedNfts = () => {
             <CircularProgress color="error" />
           </div>
         ) : (
-          (!toggleUserNfts ? nftCollectionContext?.allNfts || [] : nftCollectionContext?.userNfts || []).map((item, index) => (
-            <div key={item.id} className="w-1/2 p-2 rounded lg:w-1/4 md:w-1/3">
-              <a href={`https://testnets.opensea.io/assets/goerli/${CONTRACT_ADDRESS}/${index}`} target="_blank" rel="noreferrer">
-                <img src={item.imageUrl} alt="image" />
-              </a>
-              <p className="text-white mt-2">
-                <strong>NAME: </strong>
-                {item.name}
-              </p>
-              <p className="text-white">
-                <strong>DESCRIPTION: </strong>
-                {item.description}
-              </p>
-              <Tooltip title={item.owner}>
-                <p className="text-white">
-                  <strong>OWNER: </strong>
-                  <span>{shortenAddress(item.owner)}</span>
+          (!toggleUserNfts ? nftCollectionContext?.allNfts || [] : nftCollectionContext?.userNfts || [])
+            .sort((a, b) => b.id - a.id)
+            .map((item, index) => (
+              <div key={item.id} className="w-1/2 p-2 rounded lg:w-1/4 md:w-1/3">
+                <a href={`https://testnets.opensea.io/assets/goerli/${CONTRACT_ADDRESS}/${index}`} target="_blank" rel="noreferrer">
+                  <img src={item.imageUrl} alt="image" />
+                </a>
+                <p className="text-white mt-2">
+                  <strong>NAME: </strong>
+                  {item.name}
                 </p>
-              </Tooltip>
-            </div>
-          ))
+                <p className="text-white">
+                  <strong>DESCRIPTION: </strong>
+                  {item.description}
+                </p>
+                <Tooltip title={item.owner}>
+                  <p className="text-white">
+                    <strong>OWNER: </strong>
+                    <span>{shortenAddress(item.owner)}</span>
+                  </p>
+                </Tooltip>
+              </div>
+            ))
         )}
       </div>
     </>
