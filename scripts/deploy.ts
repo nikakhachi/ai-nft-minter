@@ -2,7 +2,7 @@ import { ethers } from "hardhat";
 
 async function main() {
   const NFTCollectionFactory = await ethers.getContractFactory("NFTCollection");
-  const contract = await NFTCollectionFactory.deploy("NikaNFTCollection", "NNC");
+  const contract = await NFTCollectionFactory.deploy("AI_NFT_Collection", "ANC");
 
   await contract.deployed();
 
