@@ -14,7 +14,7 @@ contract NFTCollection is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
 
     Counters.Counter private _tokenIdCounter;
 
-    uint8 constant public MAX_SUPPLY = 100;
+    uint8 public MAX_SUPPLY = 100;
 
     constructor(string memory _name, string memory _symbol) ERC721(_name, _symbol) {}
 
@@ -24,7 +24,7 @@ contract NFTCollection is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
         string uri;
     }
 
-    function safeMint(address to, string memory uri) public onlyOwner {
+    function safeMint(address to, string memory uri) public {
         require(totalSupply() < MAX_SUPPLY, "Maximum Supply Limit Reached");
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
@@ -40,6 +40,10 @@ contract NFTCollection is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
             tokenUrls[i] = TokenItem(i, ownerOf(i), tokenURI(i));
         }
         return tokenUrls;
+    }
+
+    function increaseMaxSupply(uint8 n) external onlyOwner {
+        MAX_SUPPLY += n;
     }
 
     function withdraw() external onlyOwner {

@@ -73,4 +73,13 @@ describe("NFCollection Contract", function () {
       expect(ownerBalancePositiveDelta).to.eq(10);
     });
   });
+
+  it("Increase Max Supply", async function () {
+    const initialMaxSupply = await contract.MAX_SUPPLY();
+    const nToIncreaseSupply = 20;
+
+    await contract.increaseMaxSupply(nToIncreaseSupply);
+
+    expect(await contract.MAX_SUPPLY()).to.eq(initialMaxSupply + nToIncreaseSupply);
+  });
 });
