@@ -1,4 +1,4 @@
-import { createContext, useState, PropsWithChildren, useEffect, useContext } from "react";
+import { createContext, useState, PropsWithChildren, useEffect, useContext, Dispatch, SetStateAction } from "react";
 import { ethers } from "ethers";
 import { SnackbarContext } from "./SnackbarContext";
 import { CONTRACT_ADDRESS } from "@/constants";
@@ -42,6 +42,7 @@ type NFTCollectionContextType = {
   isNetworkGoerli: boolean | undefined;
   setEventHandlers: () => void;
   setIsMinted: (isMinted: boolean) => void;
+  setAllNftsOffline: (nfts: NftType[], maxSupply: number, totalSupply: number) => void;
 };
 
 let metamaskWallet: ethers.providers.ExternalProvider | undefined;
@@ -49,6 +50,8 @@ if (typeof window !== "undefined") {
   // @ts-ignore
   metamaskWallet = window.ethereum;
 }
+
+const publicProvider = new ethers.providers.WebSocketProvider(process.env.GOERLI_ALCHEMY_URL_WS as string);
 
 export const NFTCollectionContext = createContext<NFTCollectionContextType | null>(null);
 
@@ -157,9 +160,9 @@ export const NFTCollectionProvider: React.FC<PropsWithChildren> = ({ children })
   //
   //
 
-  const getContract = (signer: ethers.Signer | ethers.providers.Provider | undefined): ethers.Contract => {
+  const getContract = (signer?: ethers.Signer | ethers.providers.Provider): ethers.Contract => {
     if (contract) return contract;
-    const fetchedContract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_JSON.abi, signer);
+    const fetchedContract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_JSON.abi, signer || publicProvider);
     setContract(fetchedContract);
     return fetchedContract;
   };
@@ -237,6 +240,21 @@ export const NFTCollectionProvider: React.FC<PropsWithChildren> = ({ children })
     fetchSupplies();
   };
 
+  const setAllNftsOffline = (nfts: NftType[], maxSupply: number, totalSupply: number) => {
+    setAllNfts(nfts);
+    const owners: Record<string, number> = {};
+    nfts.forEach((item) => {
+      if (owners[item.owner]) {
+        owners[item.owner]++;
+      } else {
+        owners[item.owner] = 1;
+      }
+    });
+    setMaxSupply(maxSupply);
+    setTotalSupply(totalSupply);
+    setNftOwners(owners);
+  };
+
   const tip = async (ethAmount: number) => {
     const txn = await getSigner().sendTransaction({
       from: metamaskAccount,
@@ -247,7 +265,7 @@ export const NFTCollectionProvider: React.FC<PropsWithChildren> = ({ children })
   };
 
   const setEventHandlers = () => {
-    const contract = getContract(getSigner());
+    const contract = getContract();
     contract.provider.once("block", () => {
       contract.on("Minted", async (newNft: any) => {
         const newNFTRes = {
@@ -304,6 +322,7 @@ export const NFTCollectionProvider: React.FC<PropsWithChildren> = ({ children })
     tip,
     isNetworkGoerli,
     setEventHandlers,
+    setAllNftsOffline,
   };
 
   return <NFTCollectionContext.Provider value={value}>{children}</NFTCollectionContext.Provider>;

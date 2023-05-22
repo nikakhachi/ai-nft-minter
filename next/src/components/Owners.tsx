@@ -17,22 +17,16 @@ const Owners = () => {
   return (
     <>
       <p className="text-white text-3xl text-center mb-10">Owners {!nftCollectionContext?.areNftsLoading && `- ${ownerCount()}`}</p>
-      {nftCollectionContext?.areNftsLoading ? (
-        <div className="flex align-center justify-center w-full mt-10">
-          <CircularProgress color="error" />
-        </div>
-      ) : (
-        <div className="text-white w-full text-center px-2">
-          {owners
-            .sort((a, b) => b.count - a.count)
-            .map((item) => (
-              <p className="my-1" key={item.address}>
-                <span className="font-semibold text-white dark:text-white text-md mdtext-xl">{item.address}</span> minted{" "}
-                <span className="font-semibold text-white dark:text-white text-md mdtext-xl">{item.count}</span> NFTs
-              </p>
-            ))}
-        </div>
-      )}
+      <div className="text-white w-full text-center px-2">
+        {owners
+          .sort((a, b) => b.count - a.count)
+          .map((item) => (
+            <p className="my-1" key={item.address}>
+              <span className="font-semibold text-white dark:text-white text-md mdtext-xl">{item.address}</span> minted{" "}
+              <span className="font-semibold text-white dark:text-white text-md mdtext-xl">{item.count}</span> NFTs
+            </p>
+          ))}
+      </div>
     </>
   );
 };

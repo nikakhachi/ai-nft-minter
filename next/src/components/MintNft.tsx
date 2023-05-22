@@ -84,7 +84,7 @@ const MintNft = () => {
           <div className="grid gap-y-3">
             <input
               placeholder="Text-to-Image Prompt"
-              disabled={image !== null || isGenerating}
+              disabled={image !== null || isGenerating || !nftCollectionContext?.metamaskAccount}
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
               className="m-auto w-96 h-10 focus:border-[#fe5cb8] rounded-md text-black py-3 px-4 outline-none transition"
@@ -177,11 +177,13 @@ const MintNft = () => {
             ) : (
               <button
                 onClick={handleGenerateImage}
-                disabled={image !== null || isGenerating}
+                disabled={image !== null || isGenerating || !nftCollectionContext?.metamaskAccount}
                 type="submit"
                 className="m-auto w-96 border-2 border-[#fe5cb8] text-white font-[Courier] duration-500 px-6 py-2 rounded flex justify-center items-center h-10"
               >
-                {!isGenerating ? (
+                {!nftCollectionContext?.metamaskAccount ? (
+                  "Connect Wallet"
+                ) : !isGenerating ? (
                   "Generate AI Image"
                 ) : (
                   <>

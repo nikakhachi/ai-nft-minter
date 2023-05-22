@@ -27,4 +27,12 @@ const fetchNfts = async () => {
   return allNftsRes;
 };
 
-export const jsonRpsServices = { isTotalSupplyLessThanMaxSupply, fetchNfts };
+const fetchSupplies = async () => {
+  const [maxSupply, totalSupply] = await Promise.all([
+    contract.MAX_SUPPLY().then((item: any) => bigNumberToInt(item)),
+    contract.totalSupply().then((item: any) => bigNumberToInt(item)),
+  ]);
+  return { maxSupply, totalSupply };
+};
+
+export const jsonRpsServices = { isTotalSupplyLessThanMaxSupply, fetchNfts, fetchSupplies };

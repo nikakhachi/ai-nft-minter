@@ -1,19 +1,23 @@
 import Head from "next/head";
 import styles from "@/styles/Home.module.css";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { NFTCollectionContext, NftType } from "@/contexts/NFTCollectionContext";
 import NavBar from "@/components/NavBar";
-import WalletNotConnected from "@/components/wallet-not-connected";
-import WalletConnected from "@/components/wallet-connected";
-import Loading from "@/components/Loading";
-import IncorrectNetwork from "@/components/IncorrectNetwork";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { jsonRpsServices } from "@/services/jsonRpc.service";
 import { ipfsUriToUrl } from "@/utils";
 import axios from "axios";
+import MintNft from "@/components/MintNft";
+import AllMintedNfts from "@/components/AllMintedNfts";
+import Owners from "@/components/Owners";
 
-export default function Home({ nfts }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+export default function Home({ nfts, maxSupply, totalSupply }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const nftCollectionContext = useContext(NFTCollectionContext);
+
+  useEffect(() => {
+    nftCollectionContext?.setAllNftsOffline(nfts, maxSupply, totalSupply);
+    // nftCollectionContext?.setEventHandlers();
+  }, []);
 
   return (
     <>
@@ -24,22 +28,10 @@ export default function Home({ nfts }: InferGetServerSidePropsType<typeof getSer
         <link rel="icon" href="/icon.png" />
       </Head>
       <main className={styles.main}>
-        {nftCollectionContext?.isLoading ? (
-          <Loading />
-        ) : (
-          <>
-            <NavBar />
-            {!nftCollectionContext?.metamaskAccount ? (
-              <WalletNotConnected />
-            ) : nftCollectionContext.isNetworkGoerli === undefined ? (
-              <Loading />
-            ) : nftCollectionContext.isNetworkGoerli === false ? (
-              <IncorrectNetwork />
-            ) : (
-              <WalletConnected />
-            )}
-          </>
-        )}
+        <NavBar />
+        <MintNft />
+        <AllMintedNfts />
+        <Owners />
       </main>
     </>
   );
@@ -47,6 +39,8 @@ export default function Home({ nfts }: InferGetServerSidePropsType<typeof getSer
 
 export const getServerSideProps: GetServerSideProps<{
   nfts: NftType[];
+  maxSupply: number;
+  totalSupply: number;
 }> = async () => {
   const nftsRes = await jsonRpsServices.fetchNfts();
   const nfts: NftType[] = await Promise.all(
@@ -62,5 +56,6 @@ export const getServerSideProps: GetServerSideProps<{
       })
     )
   );
-  return { props: { nfts } };
+  const { maxSupply, totalSupply } = await jsonRpsServices.fetchSupplies();
+  return { props: { nfts, maxSupply, totalSupply } };
 };
