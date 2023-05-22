@@ -1,42 +1,32 @@
-import { Contract, Signer } from "ethers";
+import { Contract } from "ethers";
 import { ethers, waffle } from "hardhat";
 import { expect } from "chai";
 import { bigNumberToInt } from "../next/src/utils";
+import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 
 describe("NFCollection Contract", function () {
   let contract: Contract;
-  let owner: Signer;
-  let ownerAddress: string;
-  let user1: Signer;
-  let user1Address: string;
-  let user2: Signer;
-  let user2Address: string;
-  let user3: Signer;
-  let user3Address: string;
+  let owner: SignerWithAddress;
+  let user1: SignerWithAddress;
+  let user2: SignerWithAddress;
+  let user3: SignerWithAddress;
 
   let nfts: { owner: string; uri: string }[] = [];
 
   this.beforeEach(async () => {
     [owner, user1, user2, user3] = await ethers.getSigners();
 
-    [ownerAddress, user1Address, user2Address, user3Address] = await Promise.all([
-      owner.getAddress(),
-      user1.getAddress(),
-      user2.getAddress(),
-      user3.getAddress(),
-    ]);
-
     const NFTCollectionFactory = await ethers.getContractFactory("NFTCollection");
     contract = await NFTCollectionFactory.deploy("NikaNFTCollection", "NNC");
     await contract.deployed();
 
     nfts = [
-      { owner: ownerAddress, uri: "uri1" },
-      { owner: user1Address, uri: "uri2" },
-      { owner: user3Address, uri: "uri3" },
-      { owner: ownerAddress, uri: "uri4" },
-      { owner: user2Address, uri: "uri5" },
-      { owner: user3Address, uri: "uri6" },
+      { owner: owner.address, uri: "uri1" },
+      { owner: user1.address, uri: "uri2" },
+      { owner: user3.address, uri: "uri3" },
+      { owner: owner.address, uri: "uri4" },
+      { owner: user2.address, uri: "uri5" },
+      { owner: user3.address, uri: "uri6" },
     ];
 
     await Promise.all(nfts.map((nft) => contract.safeMint(nft.owner, nft.uri)));
