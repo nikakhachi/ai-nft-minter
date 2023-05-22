@@ -165,6 +165,10 @@ export const NFTCollectionProvider: React.FC<PropsWithChildren> = ({ children })
   //
   //
 
+  useEffect(() => {
+    setUserNfts(allNfts.filter((item) => item.owner.toUpperCase() === metamaskAccount?.toUpperCase()));
+  }, [allNfts.length]);
+
   const getContract = (signer?: ethers.Signer | ethers.providers.Provider): ethers.Contract => {
     if (contract) return contract;
     const fetchedContract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_JSON.abi, signer || publicProvider);
@@ -221,7 +225,6 @@ export const NFTCollectionProvider: React.FC<PropsWithChildren> = ({ children })
       );
 
       setAllNfts(allNftsFinal);
-      setUserNfts(allNftsFinal.filter((item) => item.owner.toUpperCase() === metamaskAccount?.toUpperCase()));
       setNftOwners(owners);
     } catch (error) {
       console.error(error);
