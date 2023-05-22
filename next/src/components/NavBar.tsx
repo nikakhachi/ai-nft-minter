@@ -77,7 +77,11 @@ const NavBar = () => {
             TIP
           </button>
           <button onClick={handleButtonClick} className="bg-[#fe5cb8] text-white font-[Courier] duration-500 px-6 py-2 mx-4 rounded ">
-            {!nftCollectionContext?.metamaskAccount ? "Connect Wallet" : shortenAddress(nftCollectionContext.metamaskAccount)}
+            {!nftCollectionContext?.metamaskAccount
+              ? "Connect Wallet"
+              : !nftCollectionContext.isNetworkGoerli
+              ? "SWITCH TO GOERLI"
+              : shortenAddress(nftCollectionContext.metamaskAccount)}
           </button>
           <h2 className=""></h2>
         </ul>
