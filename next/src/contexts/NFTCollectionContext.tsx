@@ -163,7 +163,7 @@ export const NFTCollectionProvider: React.FC<PropsWithChildren> = ({ children })
   const getContract = (signer?: ethers.Signer | ethers.providers.Provider): ethers.Contract => {
     if (contract) return contract;
     const fetchedContract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_JSON.abi, signer || publicProvider);
-    setContract(fetchedContract);
+    if (signer) setContract(fetchedContract);
     return fetchedContract;
   };
 
@@ -175,6 +175,7 @@ export const NFTCollectionProvider: React.FC<PropsWithChildren> = ({ children })
       await txn.wait();
       setIsMinted(true);
     } catch (error) {
+      console.error(error);
       snackbarContext?.open("Something went wrong", "error");
     } finally {
       setIsMinting(false);
@@ -218,7 +219,7 @@ export const NFTCollectionProvider: React.FC<PropsWithChildren> = ({ children })
       setUserNfts(allNftsFinal.filter((item) => item.owner.toUpperCase() === metamaskAccount?.toUpperCase()));
       setNftOwners(owners);
     } catch (error) {
-      console.log(error);
+      console.error(error);
       snackbarContext?.open("Something went wrong", "error");
     } finally {
       setAreNftsLoading(false);

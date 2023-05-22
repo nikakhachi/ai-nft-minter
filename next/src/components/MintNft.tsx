@@ -49,6 +49,7 @@ const MintNft = () => {
         uuid: uniqueId,
       });
     } catch (error: any) {
+      console.error(error);
       snackbarContext?.open("Something went wrong", "error");
     } finally {
       setIsGenerating(false);
