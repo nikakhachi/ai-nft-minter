@@ -16,7 +16,7 @@ export default function Home({ nfts, maxSupply, totalSupply }: InferGetServerSid
 
   useEffect(() => {
     nftCollectionContext?.setAllNftsOffline(nfts, maxSupply, totalSupply);
-    // nftCollectionContext?.setEventHandlers();
+    nftCollectionContext?.setEventHandlers();
   }, []);
 
   return (
