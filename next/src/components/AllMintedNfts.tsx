@@ -1,13 +1,17 @@
 import { CONTRACT_ADDRESS } from "@/constants";
 import { NFTCollectionContext } from "@/contexts/NFTCollectionContext";
 import { shortenAddress } from "@/utils";
-import { CircularProgress, Switch, Tooltip } from "@mui/material";
-import { useContext, useState } from "react";
+import { Switch, Tooltip } from "@mui/material";
+import { useContext, useEffect, useState } from "react";
 
 const AllMintedNfts = () => {
   const nftCollectionContext = useContext(NFTCollectionContext);
 
   const [toggleUserNfts, setToggleUserNfts] = useState(false);
+
+  useEffect(() => {
+    setToggleUserNfts(false);
+  }, [nftCollectionContext?.metamaskAccount]);
 
   return (
     <>
@@ -16,10 +20,12 @@ const AllMintedNfts = () => {
         <p className="text-xl text-gray-400">
           {nftCollectionContext?.totalSupply} minted out of {nftCollectionContext?.maxSupply}
         </p>
-        <div className="container flex flex-wrap justify-end mx-auto">
-          <Switch color="error" onChange={(e) => setToggleUserNfts(e.target.checked)} checked={toggleUserNfts} />
-          <p className="text-white text-lg mr-2">Only My NFTs</p>
-        </div>
+        {nftCollectionContext?.metamaskAccount && (
+          <div className="container flex flex-wrap justify-end mx-auto">
+            <Switch color="error" onChange={(e) => setToggleUserNfts(e.target.checked)} checked={toggleUserNfts} />
+            <p className="text-white text-lg mr-2">Only My NFTs</p>
+          </div>
+        )}
       </div>
       <div className="container flex flex-wrap mx-auto pb-20 gap-y-5">
         {(!toggleUserNfts ? nftCollectionContext?.allNfts || [] : nftCollectionContext?.userNfts || [])
