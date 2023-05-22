@@ -14,7 +14,7 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>AI NFT Minter</title>
+        <title>AI-Minted</title>
         <meta name="description" content="Generate images with AI and mint them to own" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/icon.png" />

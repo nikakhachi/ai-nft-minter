@@ -59,7 +59,7 @@ const NavBar = () => {
           href={`https://goerli.etherscan.io/address/${CONTRACT_ADDRESS}`}
           className="text-2xl font-[Courier] cursor-pointer"
         >
-          AI NFT Minter
+          AI-Minted
         </a>
 
         <ul className="font-[Proxima Nova] flex">
