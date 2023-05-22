@@ -2,6 +2,7 @@ import { CONTRACT_ADDRESS } from "@/constants";
 import { ethers } from "ethers";
 import CONTRACT_JSON from "@/constants/contract.json";
 import { bigNumberToInt } from "@/utils";
+import { NFTResType } from "@/contexts/NFTCollectionContext";
 
 const contract = new ethers.Contract(
   CONTRACT_ADDRESS,
@@ -17,4 +18,13 @@ const isTotalSupplyLessThanMaxSupply = async () => {
   return totalSupply < maxSupply;
 };
 
-export const jsonRpsServices = { isTotalSupplyLessThanMaxSupply };
+const fetchNfts = async () => {
+  const allNftsRes: NFTResType[] = (await contract.getAllTokenData()).map((item: any) => ({
+    id: bigNumberToInt(item.id),
+    owner: item.owner,
+    uri: item.uri,
+  }));
+  return allNftsRes;
+};
+
+export const jsonRpsServices = { isTotalSupplyLessThanMaxSupply, fetchNfts };

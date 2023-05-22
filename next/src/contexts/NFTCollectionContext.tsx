@@ -6,13 +6,13 @@ import CONTRACT_JSON from "@/constants/contract.json";
 import axios from "axios";
 import { bigNumberToInt, ipfsUriToUrl } from "@/utils";
 
-type NFTResType = {
+export type NFTResType = {
   id: number;
   owner: string;
   uri: string;
 };
 
-type NftType = {
+export type NftType = {
   imageUrl: string;
   id: number;
   owner: string;
