@@ -185,7 +185,7 @@ const MintNft = () => {
                   "Generate AI Image"
                 ) : (
                   <>
-                    AI is generating you image <CircularProgress sx={{ marginLeft: "10px" }} color="inherit" size="1rem" />
+                    AI is generating your image <CircularProgress sx={{ marginLeft: "10px" }} color="inherit" size="1rem" />
                   </>
                 )}
               </button>
