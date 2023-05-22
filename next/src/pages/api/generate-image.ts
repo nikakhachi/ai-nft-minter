@@ -1,7 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { generateAsync } from "stability-client";
 import fs from "fs";
-import path from "path";
 import { ethers } from "ethers";
 import { SIGNATURE_MESSAGE } from "@/constants";
 import { jsonRpsServices } from "@/services/jsonRpc.service";
