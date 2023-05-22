@@ -64,6 +64,8 @@ const MintNft = () => {
     setImage(null);
     setCurrentImageMetadata(undefined);
     setKeyword("");
+    setName("");
+    setDescription("");
     nftCollectionContext?.setIsMinted(false);
   };
 
