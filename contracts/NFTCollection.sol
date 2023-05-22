@@ -16,7 +16,10 @@ contract NFTCollection is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
 
     uint8 public MAX_SUPPLY = 100;
 
-    constructor(string memory _name, string memory _symbol) ERC721(_name, _symbol) {}
+    constructor(
+        string memory _name,
+        string memory _symbol
+    ) ERC721(_name, _symbol) {}
 
     struct TokenItem {
         uint id;
@@ -36,7 +39,7 @@ contract NFTCollection is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
     function getAllTokenData() public view returns (TokenItem[] memory) {
         uint totalSupplyOfTokens = totalSupply();
         TokenItem[] memory tokenUrls = new TokenItem[](totalSupplyOfTokens);
-        for(uint i = 0; i < totalSupplyOfTokens; i++){
+        for (uint i = 0; i < totalSupplyOfTokens; i++) {
             tokenUrls[i] = TokenItem(i, ownerOf(i), tokenURI(i));
         }
         return tokenUrls;
@@ -50,36 +53,34 @@ contract NFTCollection is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
         payable(owner()).transfer(address(this).balance);
     }
 
-    receive() external payable {} 
+    receive() external payable {}
 
     // The following functions are overrides required by Solidity.
 
-    function _beforeTokenTransfer(address from, address to, uint256 tokenId, uint256 batchSize)
-        internal
-        override(ERC721, ERC721Enumerable)
-    {
+    function _beforeTokenTransfer(
+        address from,
+        address to,
+        uint256 tokenId,
+        uint256 batchSize
+    ) internal override(ERC721, ERC721Enumerable) {
         super._beforeTokenTransfer(from, to, tokenId, batchSize);
     }
 
-    function _burn(uint256 tokenId) internal override(ERC721, ERC721URIStorage) {
+    function _burn(
+        uint256 tokenId
+    ) internal override(ERC721, ERC721URIStorage) {
         super._burn(tokenId);
     }
 
-    function tokenURI(uint256 tokenId)
-        public
-        view
-        override(ERC721, ERC721URIStorage)
-        returns (string memory)
-    {
+    function tokenURI(
+        uint256 tokenId
+    ) public view override(ERC721, ERC721URIStorage) returns (string memory) {
         return super.tokenURI(tokenId);
     }
 
-    function supportsInterface(bytes4 interfaceId)
-        public
-        view
-        override(ERC721, ERC721Enumerable)
-        returns (bool)
-    {
+    function supportsInterface(
+        bytes4 interfaceId
+    ) public view override(ERC721, ERC721Enumerable) returns (bool) {
         return super.supportsInterface(interfaceId);
     }
 }
