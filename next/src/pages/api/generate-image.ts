@@ -2,14 +2,14 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { generateAsync } from "stability-client";
 import fs from "fs";
 import { ethers } from "ethers";
-import { SIGNATURE_MESSAGE } from "@/constants";
+import { SIGNATURE_MESSAGE_1 } from "@/constants";
 import { jsonRpsServices } from "@/services/jsonRpc.service";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === "POST") {
     const { keyword, uuid, signature } = req.body;
     if (!keyword) return res.status(400).json({ error: "Keyword is Missing" });
-    ethers.utils.verifyMessage(SIGNATURE_MESSAGE, signature);
+    ethers.utils.verifyMessage(SIGNATURE_MESSAGE_1, signature);
     const isTotalSupplyLessThanMaxSupply = await jsonRpsServices.isTotalSupplyLessThanMaxSupply();
     if (!isTotalSupplyLessThanMaxSupply) return res.status(400).json({ error: "NFT max supply is reached" });
     const imagePath = `/tmp/${uuid}`;

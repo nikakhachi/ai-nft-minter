@@ -3,7 +3,7 @@ import axios from "axios";
 import { v4 as uuid } from "uuid";
 import { NFTCollectionContext } from "@/contexts/NFTCollectionContext";
 import { CircularProgress } from "@mui/material";
-import { SIGNATURE_MESSAGE } from "@/constants";
+import { SIGNATURE_MESSAGE_1, SIGNATURE_MESSAGE_2 } from "@/constants";
 import { SnackbarContext } from "@/contexts/SnackbarContext";
 
 const MintNft = () => {
@@ -29,7 +29,7 @@ const MintNft = () => {
     try {
       const wallet = nftCollectionContext?.getSigner();
       if (!wallet) return null;
-      const signature = await wallet.signMessage(SIGNATURE_MESSAGE);
+      const signature = await wallet.signMessage(SIGNATURE_MESSAGE_1);
       const res = await axios.post(
         "/api/generate-image",
         {
@@ -68,7 +68,7 @@ const MintNft = () => {
       nftCollectionContext?.setIsMinting(true);
       const wallet = nftCollectionContext?.getSigner();
       if (!wallet) return null;
-      const signature = await wallet.signMessage(SIGNATURE_MESSAGE);
+      const signature = await wallet.signMessage(SIGNATURE_MESSAGE_2);
       const { data } = await axios.post("/api/ipfs-upload", {
         uuid: currentImageMetadata?.uuid,
         name,

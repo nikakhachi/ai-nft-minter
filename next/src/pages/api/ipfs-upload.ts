@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import fs from "fs";
 import path from "path";
 import { ethers } from "ethers";
-import { SIGNATURE_MESSAGE } from "@/constants";
+import { SIGNATURE_MESSAGE_2 } from "@/constants";
 import { jsonRpsServices } from "@/services/jsonRpc.service";
 import { NFTStorage } from "nft.storage";
 import { Blob } from "@web-std/blob";
@@ -14,7 +14,7 @@ const nftStorageClient = new NFTStorage({
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === "POST") {
     const { uuid, name, description, signature } = req.body;
-    ethers.utils.verifyMessage(SIGNATURE_MESSAGE, signature);
+    ethers.utils.verifyMessage(SIGNATURE_MESSAGE_2, signature);
     const isTotalSupplyLessThanMaxSupply = await jsonRpsServices.isTotalSupplyLessThanMaxSupply();
     if (!isTotalSupplyLessThanMaxSupply) return res.status(400).json({ error: "NFT max supply is reached" });
     const files = fs.readdirSync(`/tmp/${uuid}`);
