@@ -7,7 +7,7 @@ import { NFTResType } from "@/contexts/NFTCollectionContext";
 const contract = new ethers.Contract(
   CONTRACT_ADDRESS,
   CONTRACT_JSON.abi,
-  new ethers.providers.JsonRpcProvider(process.env.GOERLI_ALCHEMY_URL)
+  new ethers.providers.WebSocketProvider(process.env.GOERLI_ALCHEMY_URL_WS as string)
 );
 
 const isTotalSupplyLessThanMaxSupply = async () => {
