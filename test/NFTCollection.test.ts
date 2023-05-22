@@ -3,18 +3,20 @@ import { ethers, waffle } from "hardhat";
 import { expect } from "chai";
 import { bigNumberToInt } from "../next/src/utils";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
+import { NFTCollection } from "../typechain-types";
 
 describe("NFCollection Contract", function () {
-  let contract: Contract;
+  let contract: NFTCollection;
   let owner: SignerWithAddress;
   let user1: SignerWithAddress;
   let user2: SignerWithAddress;
   let user3: SignerWithAddress;
+  let user4: SignerWithAddress; // Without Initial NFT
 
   let nfts: { owner: string; uri: string }[] = [];
 
   this.beforeEach(async () => {
-    [owner, user1, user2, user3] = await ethers.getSigners();
+    [owner, user1, user2, user3, user4] = await ethers.getSigners();
 
     const NFTCollectionFactory = await ethers.getContractFactory("NFTCollection");
     contract = await NFTCollectionFactory.deploy("NikaNFTCollection", "NNC");
@@ -72,5 +74,22 @@ describe("NFCollection Contract", function () {
     await contract.increaseMaxSupply(nToIncreaseSupply);
 
     expect(await contract.MAX_SUPPLY()).to.eq(initialMaxSupply + nToIncreaseSupply);
+  });
+
+  it("Should Mint", async function () {
+    expect((await contract.balanceOf(user4.address)).toNumber()).to.eq(0);
+
+    const tokenUri = "randomTokenUri";
+
+    await contract.connect(user4).safeMint(user4.address, tokenUri);
+
+    const userNftBalance = (await contract.balanceOf(user4.address)).toNumber();
+
+    expect(userNftBalance).to.eq(1);
+
+    const nft = await contract.tokenOfOwnerByIndex(user4.address, userNftBalance - 1);
+
+    expect(await contract.ownerOf(nft)).to.eq(user4.address);
+    expect(await contract.tokenURI(nft)).to.eq(tokenUri);
   });
 });
