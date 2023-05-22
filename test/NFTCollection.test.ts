@@ -44,8 +44,9 @@ describe("NFCollection Contract", function () {
   });
 
   describe("Receive & Withdraw", function () {
-    it("Not owner isn't able to call withdraw()", async function () {
+    it("Only owner is able to call withdraw()", async function () {
       await expect(contract.connect(user1).withdraw()).to.revertedWith("Ownable: caller is not the owner");
+      await contract.withdraw();
     });
     it("withdraw() withdraws all funds and transfers it to owner", async function () {
       const contractBalance = async () => Number(ethers.utils.formatEther(await provider.getBalance(contract.address)));
