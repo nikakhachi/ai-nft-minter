@@ -23,36 +23,40 @@ const MintNft = () => {
   const [description, setDescription] = useState("");
 
   const handleGenerateImage = async () => {
-    if (!keyword) return snackbarContext?.open("Keyword is empty", "error");
-    setIsGenerating(true);
-    const uniqueId = uuid();
-    try {
-      const wallet = nftCollectionContext?.getSigner();
-      if (!wallet) return null;
-      const signature = await wallet.signMessage(SIGNATURE_MESSAGE_1);
-      const res = await axios.post(
-        "/api/generate-image",
-        {
-          keyword,
+    if (!nftCollectionContext?.metamaskAccount) {
+      nftCollectionContext?.connectToWallet();
+    } else {
+      if (!keyword) return snackbarContext?.open("Keyword is empty", "error");
+      setIsGenerating(true);
+      const uniqueId = uuid();
+      try {
+        const wallet = nftCollectionContext?.getSigner();
+        if (!wallet) return null;
+        const signature = await wallet.signMessage(SIGNATURE_MESSAGE_1);
+        const res = await axios.post(
+          "/api/generate-image",
+          {
+            keyword,
+            uuid: uniqueId,
+            msgSender: nftCollectionContext?.metamaskAccount,
+            signature,
+          },
+          {
+            responseType: "arraybuffer",
+          }
+        );
+        const blob = new Blob([res.data], { type: "image/png" });
+        setImage(URL.createObjectURL(blob));
+        setCurrentImageMetadata({
+          blob,
           uuid: uniqueId,
-          msgSender: nftCollectionContext?.metamaskAccount,
-          signature,
-        },
-        {
-          responseType: "arraybuffer",
-        }
-      );
-      const blob = new Blob([res.data], { type: "image/png" });
-      setImage(URL.createObjectURL(blob));
-      setCurrentImageMetadata({
-        blob,
-        uuid: uniqueId,
-      });
-    } catch (error: any) {
-      console.error(error);
-      snackbarContext?.open("Something went wrong", "error");
-    } finally {
-      setIsGenerating(false);
+        });
+      } catch (error: any) {
+        console.error(error);
+        snackbarContext?.open("Something went wrong", "error");
+      } finally {
+        setIsGenerating(false);
+      }
     }
   };
 
@@ -178,7 +182,7 @@ const MintNft = () => {
             ) : (
               <button
                 onClick={handleGenerateImage}
-                disabled={image !== null || isGenerating || !nftCollectionContext?.metamaskAccount}
+                disabled={image !== null || isGenerating}
                 type="submit"
                 className="m-auto w-96 border-2 border-[#fe5cb8] text-white font-[Courier] duration-500 px-6 py-2 rounded flex justify-center items-center h-10"
               >
