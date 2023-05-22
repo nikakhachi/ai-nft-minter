@@ -109,8 +109,8 @@ const MintNft = () => {
                     {!nftCollectionContext?.isMinted ? (
                       <>
                         <div className="flex flex-col items-center">
-                          <p className="text-white text-3xl font-bold">Like NFT ?</p>
-                          <p className="text-white text-md">Give it a name and a descriptino and MINT it to own !</p>
+                          <p className="text-white text-3xl font-bold">Like the Image ?</p>
+                          <p className="text-white text-md">Mint it as an NFT into your wallet !</p>
                         </div>
                         <input
                           disabled={nftCollectionContext?.isMinting}
