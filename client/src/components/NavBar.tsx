@@ -53,14 +53,17 @@ const NavBar = () => {
   return (
     <>
       <nav className="py-5 px-10 text-white md:flex md:items-center md:justify-between">
-        <a
-          target="_blank"
-          rel="noreferrer"
-          href={`https://goerli.etherscan.io/address/${NFT_COLLECTION_ADDRESS}`}
-          className="text-2xl font-[Courier] cursor-pointer"
-        >
-          AI-Minted
-        </a>
+        <div className="flex items-center gap-1">
+          <p className="text-2xl font-[Courier]">AI-Minted</p>
+          <a
+            className="text-sm cursor-pointer underline"
+            target="_blank"
+            rel="noreferrer"
+            href={`https://goerli.etherscan.io/address/${NFT_COLLECTION_ADDRESS}`}
+          >
+            (ETHERSCAN)
+          </a>
+        </div>
 
         <ul className="font-[Proxima Nova] flex">
           {items.map((item) => (
