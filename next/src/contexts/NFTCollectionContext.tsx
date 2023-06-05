@@ -1,10 +1,9 @@
 import { createContext, useState, PropsWithChildren, useEffect, useContext, Dispatch, SetStateAction } from "react";
 import { ethers } from "ethers";
 import { SnackbarContext } from "./SnackbarContext";
-import { CONTRACT_ADDRESS } from "@/constants";
-import CONTRACT_JSON from "@/constants/contract.json";
 import axios from "axios";
 import { bigNumberToInt, ipfsUriToUrl } from "@/utils";
+import { NFT_COLLECTION_ABI, NFT_COLLECTION_ADDRESS } from "@/contracts/nftCollection";
 
 export type NFTResType = {
   id: number;
@@ -171,7 +170,7 @@ export const NFTCollectionProvider: React.FC<PropsWithChildren> = ({ children })
 
   const getContract = (signer?: ethers.Signer | ethers.providers.Provider): ethers.Contract => {
     if (contract) return contract;
-    const fetchedContract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_JSON.abi, signer || publicProvider);
+    const fetchedContract = new ethers.Contract(NFT_COLLECTION_ADDRESS, NFT_COLLECTION_ABI, signer || publicProvider);
     if (signer) setContract(fetchedContract);
     return fetchedContract;
   };
@@ -267,7 +266,7 @@ export const NFTCollectionProvider: React.FC<PropsWithChildren> = ({ children })
   const tip = async (ethAmount: number) => {
     const txn = await getSigner().sendTransaction({
       from: metamaskAccount,
-      to: CONTRACT_ADDRESS,
+      to: NFT_COLLECTION_ADDRESS,
       value: ethers.utils.parseEther(String(ethAmount)),
     });
     txn.wait();

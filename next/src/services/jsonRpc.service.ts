@@ -1,12 +1,11 @@
-import { CONTRACT_ADDRESS } from "@/constants";
 import { ethers } from "ethers";
-import CONTRACT_JSON from "@/constants/contract.json";
 import { bigNumberToInt } from "@/utils";
 import { NFTResType } from "@/contexts/NFTCollectionContext";
+import { NFT_COLLECTION_ABI, NFT_COLLECTION_ADDRESS } from "@/contracts/nftCollection";
 
 const contract = new ethers.Contract(
-  CONTRACT_ADDRESS,
-  CONTRACT_JSON.abi,
+  NFT_COLLECTION_ADDRESS,
+  NFT_COLLECTION_ABI,
   new ethers.providers.WebSocketProvider(process.env.GOERLI_ALCHEMY_URL_WS as string)
 );
 

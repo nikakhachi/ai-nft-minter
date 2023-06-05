@@ -1,5 +1,5 @@
-import { CONTRACT_ADDRESS } from "@/constants";
 import { NFTCollectionContext } from "@/contexts/NFTCollectionContext";
+import { NFT_COLLECTION_ADDRESS } from "@/contracts/nftCollection";
 import { shortenAddress } from "@/utils";
 import { Switch, Tooltip } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
@@ -32,7 +32,7 @@ const AllMintedNfts = () => {
           .sort((a, b) => b.id - a.id)
           .map((item) => (
             <div key={item.id} className="w-1/2 p-2 rounded lg:w-1/4 md:w-1/3">
-              <a href={`https://testnets.opensea.io/assets/goerli/${CONTRACT_ADDRESS}/${item.id}`} target="_blank" rel="noreferrer">
+              <a href={`https://testnets.opensea.io/assets/goerli/${NFT_COLLECTION_ADDRESS}/${item.id}`} target="_blank" rel="noreferrer">
                 <img src={item.imageUrl} alt="image" />
               </a>
               <p className="text-white mt-2">

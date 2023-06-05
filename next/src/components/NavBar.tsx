@@ -10,7 +10,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import Slide from "@mui/material/Slide";
 import { TransitionProps } from "@mui/material/transitions";
 import { CircularProgress, TextField } from "@mui/material";
-import { CONTRACT_ADDRESS } from "@/constants";
+import { NFT_COLLECTION_ADDRESS } from "@/contracts/nftCollection";
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -56,7 +56,7 @@ const NavBar = () => {
         <a
           target="_blank"
           rel="noreferrer"
-          href={`https://goerli.etherscan.io/address/${CONTRACT_ADDRESS}`}
+          href={`https://goerli.etherscan.io/address/${NFT_COLLECTION_ADDRESS}`}
           className="text-2xl font-[Courier] cursor-pointer"
         >
           AI-Minted
