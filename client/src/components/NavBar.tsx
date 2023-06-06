@@ -55,14 +55,27 @@ const NavBar = () => {
       <nav className="py-5 px-10 text-white md:flex md:items-center md:justify-between">
         <div className="flex items-center gap-1">
           <p className="text-2xl font-[Courier]">AI-Minted</p>
-          <a
-            className="text-sm cursor-pointer underline"
-            target="_blank"
-            rel="noreferrer"
-            href={`https://goerli.etherscan.io/address/${NFT_COLLECTION_ADDRESS}`}
-          >
-            (ETHERSCAN)
-          </a>
+          <p>
+            (
+            <a
+              className="text-sm cursor-pointer underline"
+              target="_blank"
+              rel="noreferrer"
+              href={`https://goerli.etherscan.io/address/${NFT_COLLECTION_ADDRESS}`}
+            >
+              ETHERSCAN
+            </a>
+            ,
+            <a
+              className="text-sm cursor-pointer underline"
+              target="_blank"
+              rel="noreferrer"
+              href="https://github.com/nikakhachi/ai-nft-minter"
+            >
+              GITHUB
+            </a>
+            )
+          </p>
         </div>
 
         <ul className="font-[Proxima Nova] flex">
